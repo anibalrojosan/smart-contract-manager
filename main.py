@@ -5,7 +5,7 @@ def run_demonstration():
 
     # 1. Creation of different types of customers
     customers = [
-        RegularCustomer("R001", "Alice Smith", "alice@email.com", "+56911111111"),
+        RegularCustomer("R001", "Alice Smith", "al|ce@email", "+56911111111"),
         PremiumCustomer("P001", "Bob Jones", "bob@premium.com", "+56922222222", loyalty_points=150),
         CorporateCustomer(
             "C001", "Carlos Ruiz", "cruiz@techcorp.com", "+56933333333",

@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
+from core.validators import DataValidator
 
 class Customer(ABC):
     def __init__(self, customer_id: str, name: str, email: str, phone: str):
         self._customer_id = customer_id
-        self._name = name
-        self._email = email
-        self._phone = phone
+        self.name = name
+        self.email = email
+        self.phone = phone
 
     # --- Getters (Properties) and Setters ---
     @property
@@ -21,7 +22,7 @@ class Customer(ABC):
         # The name validation will be implemented later
         if not value:
             raise ValueError("Name cannot be empty")
-        self._name = value
+        self._name = DataValidator.validate_name(value)
 
     @property
     def email(self):
@@ -30,7 +31,7 @@ class Customer(ABC):
     @email.setter
     def email(self, value):
         # The Regex validation will be implemented later
-        self._email = value
+        self._email = DataValidator.validate_email(value)
 
     @property
     def phone(self):
@@ -41,7 +42,7 @@ class Customer(ABC):
         # The Regex validation will be implemented later
         if not value:
             raise ValueError("Phone number cannot be empty")
-        self._phone = value
+        self._phone = DataValidator.validate_phone(value)
 
     # --- Abstract Methods ---
     @abstractmethod
