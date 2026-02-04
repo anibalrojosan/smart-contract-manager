@@ -1,46 +1,57 @@
 from core.models import RegularCustomer, PremiumCustomer, CorporateCustomer
+from utils.exceptions import SCMError, ValidationError
+from utils.logger import log_error, log_info
 
 def run_demonstration():
-    print("--- Smart Customer Manager (SCM) - Phase 1 Demo ---\n")
+    log_info("Starting SMC demonstration...")
+    print("--- Smart Customer Manager (SCM) - Phase 2 Demo ---\n")
 
-    # 1. Creation of different types of customers
-    customers = [
-        RegularCustomer("R001", "Alice Smith", "alice@email.com", "+56911111111"),
-        PremiumCustomer("P001", "Bob Jones", "bob@premium.com", "+56922222222", loyalty_points=150),
-        CorporateCustomer(
-            "C001", "Carlos Ruiz", "cruiz@techcorp.com", "+56933333333",
-            company_name="Tech Corp", tax_id="77.777.777-7", position="CTO", seniority=10
-        ),
-        PremiumCustomer("P002", "Charlie Brown", "charlie@premium.com", "+56944444444", loyalty_points=200),
-        CorporateCustomer(
-            "C002", "Diana Martinez", "dmartinez@techcorp.com", "+56955555555",
-            company_name="Tech Corp", tax_id="77.777.777-7", position="CEO", seniority=5
-        ),
-        RegularCustomer("R002", "Eve Johnson", "eve@email.com", "+56966666666"),
-        PremiumCustomer("P003", "Frank Davis", "frank@premium.com", "+56977777777", loyalty_points=250),
-        CorporateCustomer(
-            "C003", "George Wilson", "gwilson@techcorp.com", "+56988888888",
-            company_name="Tech Corp", tax_id="77.777.777-7", position="CFO", seniority=15
-        )
+    valid_customers = []
+    
+    # Creation of different types of customers
+    raw_customers = [
+        ("Regular", "R001", "Alice", "alice@email.com", "+56911111111"),
+        ("Regular", "R002", "Daniel", "dan@email.com", "+56944444444"),
+        ("Premium", "P001", "Bob Jones", "al|ce@email", "+56922222222", 20),   # Invalid email
+        ("Corporate", "C001", "Carlos Ruiz", "cruiz@techcorp.com", "1234567890",  'SolutionTech', "1234567890", "CEO", 8), # Invalid phone
+        ("Regular", "R003", "D", "dan@email.com", "+56944444444"),             # Too short name
+        ('Corporate', 'C002', 'John Doe', 'john.doe@example.com', '+1234567890', 'Tech Corp', '1234567890', 'CEO', 10),
     ]
 
-    # 2. Polymorphism demonstration
-    # All customers are 'Customer', so they all have get_details() and calculate_value()
-    # but each one behaves differently.
-    print("Listing Customers and their calculated values:")
+    print("Trying to create customers from raw data:")
     print("-" * 50)
     
-    for client in customers:
-        print(f"Details: {client.get_details()}")
-        print(f"Value:   ${client.calculate_value():.2f}")
-        print(f"JSON Export: {client.to_dict()}")
-        print("-" * 50)
+    for data in raw_customers:
+        try:
+            if data[0] == "Regular":
+                customer = RegularCustomer(data[1], data[2], data[3], data[4])
+            elif data[0] == "Premium":
+                customer = PremiumCustomer(data[1], data[2], data[3], data[4], data[5])
+            elif data[0] == "Corporate":
+                customer = CorporateCustomer(data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
+            
+            valid_customers.append(customer)
+            msg = f'Successfully created {data[0]} customer: {customer.get_details()}'
+            print(msg)
+            log_info(msg)
+        
+        except ValidationError as e:
+            error_msg = f'Validation error: {e}'
+            print(error_msg)
+            log_error(error_msg)
+        except SCMError as e:
+            error_msg = f'System error: {e}'
+            print(error_msg)
+            log_error(error_msg)
+        except Exception as e:
+            error_msg = f'Unexpected error: {type(e).__name__}: {e}'
+            print(error_msg)
+            log_error(error_msg)
 
-    # 3. Equality demonstration (__eq__)
-    print("\nTesting Object Equality:")
-    another_alice = RegularCustomer("R002", "Alice Smith", "alice@email.com", "+56911111111")
-    print(f"Is same ID Alice equal to original Alice? {customers[0] == another_alice}")
-    print(f"Hash comparison: {hash(customers[0]) == hash(another_alice)}")
+    print("-" * 50)
+    summary_msg = f'Total valid customers created: {len(valid_customers)}'
+    print(summary_msg)
+    log_info(summary_msg)
 
 if __name__ == "__main__":
     run_demonstration()
