@@ -114,7 +114,7 @@ class PremiumCustomer(Customer):
 
     def get_details(self) -> str:
         """Returns detailed info including loyalty status."""
-        return f"PREMIUM CUSTOMER - {self.name} | Points: {self.loyalty_points}"
+        return f"PREMIUM CUSTOMER - {self.name} | Loyalty points: {self.loyalty_points}"
 
     def calculate_value(self) -> float:
         """Premium customers have a base rate plus a bonus for loyalty points."""
@@ -127,5 +127,50 @@ class PremiumCustomer(Customer):
         data = super().to_dict()
         data.update({
             "loyalty_points": self.loyalty_points
+        })
+        return data
+
+class CorporateCustomer(Customer):
+    def __init__(self, customer_id: str, name: str, email: str, phone: str, company_name: str,
+                 tax_id: str, position: str, seniority: int = 0):
+        super().__init__(customer_id, name, email, phone)
+        # Corporate customers have company name, tax id, position and seniority (years of service)
+        self._company_name = company_name
+        self._tax_id = tax_id
+        self._position = position
+        self._seniority = seniority
+
+    # --- Corporate Properties ---
+    @property
+    def company_name(self):
+        return self._company_name
+
+    @property
+    def tax_id(self):
+        return self._tax_id
+
+    @property
+    def position(self):
+        return self._position
+
+    @property
+    def seniority(self):
+        return self._seniority
+
+    def get_details(self) -> str:
+        """Returns corporate contact details."""
+        return f"CORPORATE: {self.company_name} | Contact: {self.name} ({self.position}) | Seniority: {self.seniority} years"
+
+    def calculate_value(self) -> float:
+        """Corporate value is higher due to bulk contracts."""
+        return 500.0 + (self.seniority * 50)
+
+    def to_dict(self) -> dict:
+        """Includes corporate fields in the dictionary."""
+        data = super().to_dict()
+        data.update({
+            "company_name": self.company_name,
+            "tax_id": self.tax_id,
+            "position": self.position
         })
         return data
