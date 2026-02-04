@@ -74,3 +74,58 @@ class Customer(ABC):
         if not isinstance(other, Customer):
             return False
         return self.customer_id == other.customer_id
+
+    def __hash__(self):
+        """Return a hash of the customer's ID. Useful for sets and dictionaries."""
+        return hash(self.customer_id)
+
+
+class RegularCustomer(Customer):
+    def __init__(self, customer_id: str, name: str, email: str, phone: str):
+        super().__init__(customer_id, name, email, phone)
+
+    def get_details(self) -> str:
+        """Return basic contact information for a regular customer."""
+        return f"Regular Customer: {self.name}, Contact: {self.email}"
+
+    def calculate_value(self) -> float:
+        """Regular customers have a fixed base value."""
+        return 100.0
+
+    def calculate_discount(self) -> float:
+        """Applies a standard 5% discount over the base value."""
+        return 0.05 * self.calculate_value()
+
+class PremiumCustomer(Customer):
+    def __init__(self, customer_id: str, name: str, email: str, phone: str, loyalty_points: int = 0):
+        super().__init__(customer_id, name, email, phone)
+        # Premium customers have loyalty points
+        self._loyalty_points = loyalty_points
+
+    @property
+    def loyalty_points(self):
+        return self._loyalty_points
+
+    @loyalty_points.setter
+    def loyalty_points(self, value):
+        if value < 0:
+            raise ValueError("Loyalty points cannot be negative")
+        self._loyalty_points = value
+
+    def get_details(self) -> str:
+        """Returns detailed info including loyalty status."""
+        return f"PREMIUM CUSTOMER - {self.name} | Points: {self.loyalty_points}"
+
+    def calculate_value(self) -> float:
+        """Premium customers have a base rate plus a bonus for loyalty points."""
+        base_premium_fee = 200.0
+        point_bonus = self.loyalty_points * 0.5
+        return base_premium_fee + point_bonus
+
+    def to_dict(self) -> dict:
+        """Extends the base dictionary with premium-specific data."""
+        data = super().to_dict()
+        data.update({
+            "loyalty_points": self.loyalty_points
+        })
+        return data
