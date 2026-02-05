@@ -57,7 +57,7 @@ python3 migrate_data.py
 ## 🛠 Project Structure
 
 ```text
-python_sence_ABP4/
+smart-customer-manager/
 ├── core/
 │   ├── models.py          # OOP Class hierarchy (Inheritance/Abstraction)
 │   └── validators.py      # Data validation logic (Regex)
