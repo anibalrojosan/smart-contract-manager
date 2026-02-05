@@ -23,12 +23,21 @@ This document outlines the development phases and the branching strategy for the
 - [ ] Utility module with Regex for data sanitization.
 - [ ] Basic logging system for error tracking.
 
-## Phase 3: Data Persistence (JSON to SQLite)
+## Phase 3: Data Persistence (Evolutionary Approach)
 **Branch:** `feature/phase3-persistence`
-- [ ] Implement `JSONRepository` for quick persistence.
-- [ ] Design the SQLite database schema.
-- [ ] Implement `SQLiteRepository` (DAO pattern).
-- [ ] Data migration script from JSON to SQL.
+
+### Step A: Initial Persistence with JSON
+- [ ] Define `CustomerRepository` abstract interface (Repository Pattern).
+- [ ] Implement `JSONRepository` for local file storage.
+- [ ] Develop logic to convert JSON dictionaries back into specific Customer objects using the `from_dict` factory method.
+- [ ] Integration test: Save and load customers from `customers.json`.
+
+### Step B: Professional Upgrade to SQLite
+- [ ] Design the relational database schema (Table structure).
+- [ ] Implement `SQLiteRepository` using the same `CustomerRepository` interface.
+- [ ] Handle database connections, cursors, and SQL transactions (CRUD).
+- [ ] Create a **Migration Script** to transfer data from JSON to SQLite.
+- [ ] Final verification: Switch repository types in `main.py` with zero impact on business logic.
 
 ---
 

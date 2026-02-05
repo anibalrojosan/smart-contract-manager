@@ -8,7 +8,7 @@ __pycache__/
 *.db
 
 # Data files
-*.json
+# *.json
 *.csv
 !example.json
 
