@@ -3,8 +3,6 @@
 ## Introduction
 **SCM** is a robust Python-based solution designed to transform manual data administration into an automated, scalable, and secure system. This project implements advanced OOP principles, strict data validation, and a flexible persistence layer to manage different types of customers (Regular, Premium, and Corporate).
 
----
-
 ## 🚀 Quick Start Guide
 
 ### 1. Prerequisites
@@ -14,8 +12,8 @@
 ### 2. Installation
 Clone the repository and navigate to the project folder:
 ```bash
-git clone https://github.com/anibalrojosan/smart-contract-manager.git
-cd smart-contract-manager
+git clone https://github.com/anibalrojosan/smart-customer-manager.git
+cd smart-customer-manager
 ```
 
 ### 3. Running the System
@@ -23,8 +21,6 @@ The main entry point is `main.py`. You can run the demonstration with:
 ```bash
 python3 main.py
 ```
-
----
 
 ## 💾 Persistence Configuration
 One of the key features of SCM is its **flexible storage system**. You can switch between a simple JSON file and a professional SQLite database by modifying just one line in `main.py`.
@@ -44,15 +40,11 @@ repo = JSONRepository("storage/customers.json")
 repo = SQLiteRepository("storage/scm_database.db")
 ```
 
----
-
 ## 🔄 Data Migration
 If you have existing data in a JSON file and want to move it to the SQLite database, run the migration utility:
 ```bash
 python3 migrate_data.py
 ```
-
----
 
 ## 🛠 Project Structure
 
@@ -80,8 +72,6 @@ smart-customer-manager/
 └── README.md              # Project documentation
 ```
 
----
-
 ## 📚 Documentation
 For detailed project documentation, please refer to the following files:
 - `doc/ROADMAP.md`: Project milestones and roadmap.
@@ -92,7 +82,15 @@ The class diagram is a visual representation of the project's class hierarchy an
 
 ![Class Diagram](doc/class_diagram.png)
 
----
+## 🧠 Technical Highlights
+
+- **Object-Oriented Programming (OOP)**: The project is implemented using advanced OOP principles (inheritance, polymorphism, encapsulation, and abstraction), allowing for a modular and reusable codebase.
+- **Repository Pattern**: The project uses the Repository Pattern to abstract the data storage layer, allowing for easy switching between different data sources.
+- **Persistence**: The project uses a persistence layer to store the data in a JSON file or a SQLite database.
+- **Data Validation**: The project uses Regex and data type validators to ensure the integrity of the data.
+- **Logging**: The project uses a logging system to track the execution of the system and to track errors.
+- **Error Handling**: The project uses error handling to ensure the system is robust and can handle errors gracefully.
+- **Migration**: The project uses a migration script to migrate data from a JSON file to a SQLite database.
 
 ## 🔮 Future Improvements
 
@@ -103,4 +101,5 @@ Some of the future improvements that are considered are the following:
 - **Unit Testing**: Implement comprehensive unit tests using **pytest** or **unittest** for critical business logic and validation functions to ensure system reliability.
 
 ---
+
 > This project was developed with ❤️ by [Anibal Rojo](https://github.com/anibalrojosan).
