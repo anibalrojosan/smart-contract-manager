@@ -8,8 +8,9 @@ __pycache__/
 *.db
 
 # Data files
-# *.json
+*.json
 *.csv
+*.db
 !example.json
 
 # Environments
