@@ -1,4 +1,4 @@
-# Smart Customer Manager (SCM) - SolutionTech
+# Smart Customer Manager (SCM)
 
 ## Introduction
 **SCM** is a robust Python-based solution designed to transform manual data administration into an automated, scalable, and secure system. This project implements advanced OOP principles, strict data validation, and a flexible persistence layer to manage different types of customers (Regular, Premium, and Corporate).
@@ -82,11 +82,25 @@ smart-customer-manager/
 
 ---
 
+## 📚 Documentation
+For detailed project documentation, please refer to the following files:
+- `doc/ROADMAP.md`: Project milestones and roadmap.
+- `doc/DEVLOG.md`: Development history and progress tracking.
+
+### Class Diagram
+The class diagram is a visual representation of the project's class hierarchy and relationships. It is a useful tool for understanding the project's structure and how the classes interact with each other. The diagram is shown below:
+
+![Class Diagram](doc/classdiagram.png)
+
+---
+
 ## 🔮 Future Improvements
+
+Some of the future improvements that are considered are the following:
 
 - **User Interface (UI)**: Develop a modern web interface using **Streamlit** for rapid prototyping or a custom **HTML/CSS/JS** frontend.
 - **External Integrations**: Implement connections with external APIs for real-time customer data validation and automated notifications (Email/SMS).
 - **Unit Testing**: Implement comprehensive unit tests using **pytest** or **unittest** for critical business logic and validation functions to ensure system reliability.
 
 ---
-> This project was developed with ❤️ by [Anibal Rojo](https://github.com/anibalrojosan)
+> This project was developed with ❤️ by [Anibal Rojo](https://github.com/anibalrojosan).
