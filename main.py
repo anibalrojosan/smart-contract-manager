@@ -1,14 +1,26 @@
+import os
 from core.models import RegularCustomer, PremiumCustomer, CorporateCustomer
 from utils.exceptions import SCMError, ValidationError
 from utils.logger import log_error, log_info
+from data.repository import JSONRepository
 
 def run_demonstration():
-    log_info("Starting SMC demonstration...")
-    print("--- Smart Customer Manager (SCM) - Phase 2 Demo ---\n")
+    log_info("Starting SCM Phase 3 (JSON Persistence) demonstration...")
+    print("--- Smart Customer Manager (SCM) - Phase 3 Demo ---\n")
 
-    valid_customers = []
+    # 1. Initialize the Repository
+    # Create the storage folder if it doesn't exist
+    if not os.path.exists('storage'):
+        os.makedirs('storage')
     
-    # Creation of different types of customers
+    repo = JSONRepository("storage/customers.json")
+
+    # 2. Try to load existing customers
+    existing_customers = repo.get_all()
+    print(f"Loaded {len(existing_customers)} customers from storage.")
+    log_info(f"Loaded {len(existing_customers)} customers from JSON.")
+
+    # 3. Test data (Raw Data)
     raw_customers = [
         ("Regular", "R001", "Alice", "alice@email.com", "+56911111111"),
         ("Regular", "R002", "Daniel", "dan@email.com", "+56944444444"),
@@ -18,40 +30,44 @@ def run_demonstration():
         ('Corporate', 'C002', 'John Doe', 'john.doe@example.com', '+1234567890', 'Tech Corp', '1234567890', 'CEO', 10),
     ]
 
-    print("Trying to create customers from raw data:")
+    print("\nProcessing new data and saving to storage:")
     print("-" * 50)
     
     for data in raw_customers:
         try:
-            if data[0] == "Regular":
+            c_type = data[0]
+            if c_type == "Regular":
                 customer = RegularCustomer(data[1], data[2], data[3], data[4])
-            elif data[0] == "Premium":
+            elif c_type == "Premium":
                 customer = PremiumCustomer(data[1], data[2], data[3], data[4], data[5])
-            elif data[0] == "Corporate":
-                customer = CorporateCustomer(data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
+            elif c_type == "Corporate":
+                customer = CorporateCustomer(data[1], data[2], data[3], data[4], data[5], data[6], data[7])
             
-            valid_customers.append(customer)
-            msg = f'Successfully created {data[0]} customer: {customer.get_details()}'
-            print(msg)
+            # Save the customer to the repository
+            repo.save(customer)
+            
+            msg = f"Saved {c_type} customer: {customer.name} (ID: {customer.customer_id})"
+            print(f"{msg}")
             log_info(msg)
         
         except ValidationError as e:
-            error_msg = f'Validation error: {e}'
-            print(error_msg)
-            log_error(error_msg)
-        except SCMError as e:
-            error_msg = f'System error: {e}'
-            print(error_msg)
+            error_msg = f"Validation error: {e}"
+            print(f"{error_msg}")
             log_error(error_msg)
         except Exception as e:
-            error_msg = f'Unexpected error: {type(e).__name__}: {e}'
-            print(error_msg)
+            error_msg = f"Unexpected error: {type(e).__name__}: {e}"
+            print(f"{error_msg}")
             log_error(error_msg)
 
+    # 4. Final verification: List all customers in the repository now
+    final_list = repo.get_all()
     print("-" * 50)
-    summary_msg = f'Total valid customers created: {len(valid_customers)}'
-    print(summary_msg)
-    log_info(summary_msg)
+    print(f"\nFinal count in storage: {len(final_list)} customers.")
+    
+    # Show an example of successful rehydration
+    if final_list:
+        sample = final_list[0]
+        print(f"Sample from storage: {sample.get_details()} (Type: {type(sample).__name__})")
 
 if __name__ == "__main__":
     run_demonstration()

@@ -1,0 +1,36 @@
+[
+    {
+        "id": "R001",
+        "name": "Alice",
+        "email": "alice@email.com",
+        "phone": "+56911111111",
+        "type": "RegularCustomer"
+    },
+    {
+        "id": "R002",
+        "name": "Daniel",
+        "email": "dan@email.com",
+        "phone": "+56944444444",
+        "type": "RegularCustomer"
+    },
+    {
+        "id": "C001",
+        "name": "Carlos Ruiz",
+        "email": "cruiz@techcorp.com",
+        "phone": "1234567890",
+        "type": "CorporateCustomer",
+        "company_name": "SolutionTech",
+        "tax_id": "1234567890",
+        "position": "CEO"
+    },
+    {
+        "id": "C002",
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "phone": "+1234567890",
+        "type": "CorporateCustomer",
+        "company_name": "Tech Corp",
+        "tax_id": "1234567890",
+        "position": "CEO"
+    }
+]

@@ -52,6 +52,7 @@ class JSONRepository(CustomerRepository):
                 found = True
                 break
         
+        # If it doesn't exist in the file, add it
         if not found:
             customers_data.append(new_data)
             
