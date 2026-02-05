@@ -10,6 +10,7 @@ __pycache__/
 # Data files
 *.json
 *.csv
+*.db
 !example.json
 
 # Environments
