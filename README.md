@@ -90,7 +90,7 @@ For detailed project documentation, please refer to the following files:
 ### Class Diagram
 The class diagram is a visual representation of the project's class hierarchy and relationships. It is a useful tool for understanding the project's structure and how the classes interact with each other. The diagram is shown below:
 
-![Class Diagram](doc/classdiagram.png)
+![Class Diagram](doc/class_diagram.png)
 
 ---
 
