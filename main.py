@@ -2,7 +2,7 @@ import os
 from core.models import RegularCustomer, PremiumCustomer, CorporateCustomer
 from utils.exceptions import SCMError, ValidationError
 from utils.logger import log_error, log_info
-from data.repository import JSONRepository
+from data.repository import JSONRepository, SQLiteRepository
 
 def run_demonstration():
     log_info("Starting SCM Phase 3 (JSON Persistence) demonstration...")
@@ -13,7 +13,8 @@ def run_demonstration():
     if not os.path.exists('storage'):
         os.makedirs('storage')
     
-    repo = JSONRepository("storage/customers.json")
+    # repo = JSONRepository("storage/scm_system.json")
+    repo = SQLiteRepository("storage/scm_system.db")
 
     # 2. Try to load existing customers
     existing_customers = repo.get_all()

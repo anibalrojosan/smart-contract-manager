@@ -3,6 +3,8 @@ import os
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from core.models import Customer, RegularCustomer, PremiumCustomer, CorporateCustomer
+from utils.exceptions import SCMError
+import sqlite3
 
 class CustomerRepository(ABC):
     @abstractmethod
@@ -88,3 +90,103 @@ class JSONRepository(CustomerRepository):
             if c.customer_id == customer_id:
                 return c
         return None
+
+
+class SQLiteRepository(CustomerRepository):
+    def __init__(self, db_path: str):
+        self.db_path = db_path
+        self._create_table()
+
+    def _get_connection(self):
+        """Helper to get a connection to SQLite."""
+        return sqlite3.connect(self.db_path)
+
+    def _create_table(self):
+        """Creates the customers table if it doesn't exist."""
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS customers (
+                    id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL,
+                    phone TEXT,
+                    type TEXT NOT NULL,
+                    loyalty_points INTEGER,
+                    company_name TEXT,
+                    tax_id TEXT,
+                    position TEXT
+                )
+            ''')
+            conn.commit()
+
+    def save(self, customer: Customer) -> None:
+        """Saves or updates a customer using SQL."""
+        data = customer.to_dict()
+        
+        # Prepare the fields. If they don't exist in the dict (e.g. Regular), set them to None
+        fields = (
+            data['id'], data['name'], data['email'], data['phone'], data['type'],
+            data.get('loyalty_points'), data.get('company_name'), 
+            data.get('tax_id'), data.get('position')
+        )
+
+        query = '''
+            INSERT OR REPLACE INTO customers 
+            (id, name, email, phone, type, loyalty_points, company_name, tax_id, position)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        '''
+        
+        with self._get_connection() as conn:
+            conn.execute(query, fields)
+            conn.commit()
+
+    def get_all(self) -> List[Customer]:
+        """Fetches all rows and rehydrates them into Customer objects."""
+        customers = []
+        query = "SELECT * FROM customers"
+        
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            rows = cursor.execute(query).fetchall()
+            
+            for row in rows:
+                # row is a tuple: (id, name, email, phone, type, loyalty, company, tax, pos)
+                c_id, name, email, phone, class_name = row[0], row[1], row[2], row[3], row[4]
+                
+                if class_name == 'RegularCustomer':
+                    obj = RegularCustomer(c_id, name, email, phone)
+                elif class_name == 'PremiumCustomer':
+                    obj = PremiumCustomer(c_id, name, email, phone, row[5] or 0)
+                elif class_name == 'CorporateCustomer':
+                    obj = CorporateCustomer(c_id, name, email, phone, row[6], row[7], row[8])
+                else:
+                    # For now, raise a custom exception and stop the program
+                    # Later, we can ignore the unknown customer type and register it as a warning 
+                    # in the log
+                    raise SCMError(f'Unknown customer type: {class_name}')
+                
+                customers.append(obj)
+        return customers
+
+    def find_by_id(self, customer_id: str) -> Optional[Customer]:
+        """Finds a single customer by ID using a WHERE clause."""
+        query = "SELECT * FROM customers WHERE id = ?"
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            row = cursor.execute(query, (customer_id,)).fetchone()
+            
+            if not row:
+                return None
+            
+            # Reuse the same rehydration logic (could be refactored later)
+            class_name = row[4]
+            if class_name == 'RegularCustomer':
+                return RegularCustomer(row[0], row[1], row[2], row[3])
+            elif class_name == 'PremiumCustomer':
+                return PremiumCustomer(row[0], row[1], row[2], row[3], row[5])
+            elif class_name == 'CorporateCustomer':
+                return CorporateCustomer(row[0], row[1], row[2], row[3], row[6], row[7], row[8])
+            else:
+                # For now, raise a custom exception and stop the program
+                raise SCMError(f'Unknown customer type: {class_name}')
